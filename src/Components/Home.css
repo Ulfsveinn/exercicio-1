@@ -1,0 +1,144 @@
+.home-section {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  flex-wrap: wrap; /* Permite que os itens se ajustem em telas menores */
+  background-color: #f9f9f9; /* Cor de fundo suave */
+}
+
+.home-content {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.home-content h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #333; /* Cor do texto */
+}
+
+.home-content p {
+  margin-bottom: 20px;
+  color: #666; /* Cor do texto */
+}
+
+.home-content a .btn {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.home-content a .btn:hover {
+  background-color: #45a049;
+}
+
+.home-image-box {
+  flex: 1;
+  text-align: center;
+}
+
+.home-image-box .home-image {
+  width: 100%;
+  max-width: 400px; /* Aumenta o tamanho máximo da imagem */
+  height: auto;
+  border: 1px solid #ccc;
+  display: inline-block;
+  object-fit: cover;
+  border-radius: 8px; /* Bordas arredondadas */
+}
+
+/* Media query para telas menores */
+@media (max-width: 600px) {
+  .home-section {
+    flex-direction: column; /* Alinha os itens em coluna em telas menores */
+    padding: 10px;
+  }
+
+  .home-content {
+    margin-right: 0;
+    margin-bottom: 20px; /* Adiciona margem inferior para espaçamento */
+  }
+
+  .home-image-box {
+    order: 2; /* Move a imagem para baixo do conteúdo */
+  }
+}
+
+/* Media query para telas maiores (ajusta o tamanho das imagens em telas grandes) */
+@media (min-width: 601px) {
+  .home-image-box .home-image {
+    max-width: 500px; /* Aumenta o tamanho máximo da imagem em telas maiores */
+  }
+}
+
+.main-content {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fff; /* Cor de fundo branco */
+  padding: 20px;
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.objectives-section, .goals-section, .news-section {
+  padding: 20px;
+  flex: 1;
+}
+
+.objectives-section h2, .goals-section h2, .news-section h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #333; /* Cor do texto */
+}
+
+.objectives-section p, .goals-section p, .news-section p {
+  margin-bottom: 20px;
+  color: #666; /* Cor do texto */
+}
+
+.objectives-section ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  text-align: left; /* Alinha o texto à esquerda */
+}
+
+.objectives-section ul li {
+  margin-bottom: 10px;
+}
+
+.news-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.news-table td {
+  padding: 10px;
+  vertical-align: top;
+}
+
+.news-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 8px; /* Bordas arredondadas */
+}
+
+.news-table a {
+  color: #4CAF50; /* Cor do link */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.news-table a:hover {
+  text-decoration: underline;
+}

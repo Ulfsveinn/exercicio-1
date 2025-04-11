@@ -1,0 +1,86 @@
+/* Estilo do cabeçalho */
+.header {
+    background-color: #04b13e; /* Cor de fundo verde */
+    color: white; /* Texto branco */
+    text-align: center; /* Centraliza o texto */
+    padding: 20px; /* Espaçamento interno */
+    display: flex; /* Layout flexível */
+    justify-content: space-between; /* Espaçamento entre os elementos */
+    align-items: center; /* Alinha os itens verticalmente */
+    width: 100%; /* Ocupa toda a largura */
+}
+
+.header div {
+    display: flex;
+    align-items: center;
+}
+
+/* Estilo para os links no cabeçalho */
+.header a {
+    margin-left: 10px; /* Espaçamento entre os links */
+    text-decoration: none; /* Remove o sublinhado */
+    color: #ffffff; /* Cor branca */
+}
+
+.header a:hover {
+    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+}
+
+/* Estilo para o menu hambúrguer no mobile */
+.hamburger {
+    display: none; /* Esconde o menu no desktop */
+    flex-direction: column; /* Layout em coluna */
+    cursor: pointer; /* Indica que é clicável */
+    position: absolute; /* Posiciona no topo */
+    top: 165px;
+    right: 10px;
+    z-index: 10; /* Garante que fique acima de outros elementos */
+}
+
+.hamburger div {
+    width: 25px; /* Largura das linhas do menu */
+    height: 3px; /* Altura das linhas */
+    background-color: white; /* Cor branca */
+    margin: 4px 0; /* Espaçamento entre as linhas */
+    transition: 0.4s; /* Animação suave */
+}
+
+.nav ul.show {
+    display: flex;
+    flex-direction: column;
+    background-color: #027e08;
+    position: absolute;
+    top: auto;
+    left: 0;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    margin-top: auto;
+}
+
+.nav ul.show li {
+    margin: 10px 0;
+}
+
+.nav ul.show li a {
+    color: white;
+}
+
+.nav ul.show li a:hover {
+    text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .nav {
+        padding: 30px 0px;
+    }
+    .nav ul {
+        display: none; /* Esconde o menu no mobile */
+    }
+
+    .hamburger {
+        display: flex; /* Mostra o menu no mobile */
+        margin-top: 40px;
+    }
+}
