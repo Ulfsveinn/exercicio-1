@@ -1,9 +1,25 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./Sementes.css";
 
-function Sementes({ adicionarCarrinho, produtos }) {
+function Sementes({ adicionarCarrinho }) {
   const [quantidade, setQuantidade] = useState(1);
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);
+  const [produtos, setProdutos] = useState([]);
+
+  // Função para carregar os produtos do backend
+  const carregarProdutos = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/produtos");
+      setProdutos(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
+  };
+
+  useEffect(() => {
+    carregarProdutos(); // Carrega os produtos ao montar o componente
+  }, []);
 
   const abrirPopup = (produto) => {
     if (produto.quantidade_disponivel === 0) {
@@ -50,8 +66,9 @@ function Sementes({ adicionarCarrinho, produtos }) {
       return;
     }
 
-    adicionarCarrinho(produtoSelecionado, quantidade, id_usuario);
+    await adicionarCarrinho(produtoSelecionado, quantidade, id_usuario);
     fecharPopup();
+    carregarProdutos(); // Atualiza os produtos após adicionar ao carrinho
   };
 
   if (!produtos || produtos.length === 0) {
