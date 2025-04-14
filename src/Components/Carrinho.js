@@ -65,12 +65,32 @@ function Carrinho() {
       .catch((error) => console.error("Erro ao remover item do carrinho:", error));
   };
 
-  const handleConfirmarPedido = () => {
-    setMensagemSucesso("Pedido enviado com sucesso!");
-    setTimeout(() => {
-      setMensagemSucesso("");
-      navigate("/confirmar");
-    }, 5000);
+  const handleConfirmarPedido = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const id_usuario = user ? user.id_usuario : null;
+
+      if (!id_usuario) {
+        alert("Você precisa estar logado para confirmar o pedido.");
+        return;
+      }
+
+      // Envia o carrinho para o backend para processar o pedido
+      await axios.post("http://localhost:8000/confirmar-pedido", {
+        id_usuario,
+        carrinho, // Envia o carrinho completo para o backend
+      });
+
+      setCarrinho([]); // Limpa o carrinho no frontend
+      setMensagemSucesso("Pedido enviado com sucesso!");
+      setTimeout(() => {
+        setMensagemSucesso("");
+        navigate("/confirmar");
+      }, 5000);
+    } catch (error) {
+      console.error("Erro ao confirmar pedido:", error);
+      alert("Erro ao confirmar pedido. Tente novamente.");
+    }
   };
 
   return (

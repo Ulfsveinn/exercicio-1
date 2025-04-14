@@ -4,13 +4,12 @@ import "./Sementes.css";
 function Sementes({ adicionarCarrinho, produtos }) {
   const [quantidade, setQuantidade] = useState(1);
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);
-  const [produtosLocais, setProdutosLocais] = useState(produtos);
-
-  useEffect(() => {
-    setProdutosLocais(produtos);
-  }, [produtos]);
 
   const abrirPopup = (produto) => {
+    if (produto.quantidade_disponivel === 0) {
+      alert("Este produto está indisponível.");
+      return;
+    }
     setProdutoSelecionado(produto);
     setQuantidade(1);
   };
@@ -33,6 +32,16 @@ function Sementes({ adicionarCarrinho, produtos }) {
       return;
     }
 
+    if (produtoSelecionado.quantidade_disponivel <= 0) {
+      alert("Este produto está indisponível e não pode ser adicionado ao carrinho.");
+      return;
+    }
+
+    if (produtoSelecionado.quantidade_disponivel < quantidade) {
+      alert("Quantidade selecionada excede a disponível.");
+      return;
+    }
+
     const user = JSON.parse(localStorage.getItem("user"));
     const id_usuario = user ? user.id_usuario : null;
 
@@ -43,31 +52,11 @@ function Sementes({ adicionarCarrinho, produtos }) {
 
     adicionarCarrinho(produtoSelecionado, quantidade, id_usuario);
     fecharPopup();
-
-    // Atualiza a interface local
-    setProdutosLocais((prevProdutos) =>
-      prevProdutos.map((p) =>
-        p.id === produtoSelecionado.id
-          ? { ...p, quantidade: p.quantidade - quantidade }
-          : p
-      )
-    );
-
-    // Atualiza o banco de dados
-    try {
-      await fetch(`http://localhost:8000/produtos/${produtoSelecionado.id}/atualizar-quantidade`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          novaQuantidade: produtoSelecionado.quantidade - quantidade,
-        }),
-      });
-    } catch (error) {
-      console.error("Erro ao atualizar quantidade no banco:", error);
-    }
   };
+
+  if (!produtos || produtos.length === 0) {
+    return <p>Não há produtos disponíveis no momento.</p>;
+  }
 
   return (
     <div>
@@ -76,20 +65,23 @@ function Sementes({ adicionarCarrinho, produtos }) {
         <p>Confira abaixo as opções de sementes e mudas disponíveis:</p>
 
         <div className="produtos-container">
-          {produtosLocais.map((produto) => (
+          {produtos.map((produto) => (
             <div
               key={produto.id}
-              className={`produto-box ${produto.quantidade === 0 ? "desativado" : ""}`}
+              className={`produto-box ${produto.quantidade_disponivel === 0 ? "desativado" : ""}`}
             >
               <img
                 src={process.env.PUBLIC_URL + produto.url_imagem}
                 alt={produto.nome}
                 className="produto-imagem"
               />
-              <h5 className={`produto-nome ${produto.quantidade === 0 ? "desativado" : ""}`}>
-                {produto.nome} {produto.quantidade > 0 ? `(${produto.quantidade} disponíveis)` : "(Indisponível)"}
+              <h5 className={`produto-nome ${produto.quantidade_disponivel === 0 ? "desativado" : ""}`}>
+                {produto.nome}{" "}
+                {produto.quantidade_disponivel > 0
+                  ? `(${produto.quantidade_disponivel} disponíveis)`
+                  : "(Indisponível)"}
               </h5>
-              <button onClick={() => abrirPopup(produto)} disabled={produto.quantidade === 0}>
+              <button onClick={() => abrirPopup(produto)} disabled={produto.quantidade_disponivel === 0}>
                 Escolher Quantidade
               </button>
             </div>

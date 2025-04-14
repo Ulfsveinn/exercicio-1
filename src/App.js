@@ -33,10 +33,17 @@ function App() {
   const [produtos, setProdutos] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/produtos")
-      .then((response) => setProdutos(response.data))
-      .catch((error) => console.error("Erro ao buscar produtos:", error));
+    const carregarProdutos = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/produtos");
+        setProdutos(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+        setProdutos([]); // Define como vazio caso o banco esteja offline
+      }
+    };
+
+    carregarProdutos();
   }, []);
 
   const handleLogin = (userData) => {

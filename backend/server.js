@@ -97,17 +97,16 @@ app.get('/produtos', (req, res) => {
         SELECT 
             p.id,
             p.nome,
-            p.quantidade - IFNULL(SUM(c.quantidade), 0) AS quantidade_disponivel,
+            p.quantidade AS quantidade_disponivel,
             p.url_imagem
         FROM produtos p
-        LEFT JOIN carrinho c ON p.id = c.produto_id
-        GROUP BY p.id
     `;
     db.query(sql, (err, results) => {
         if (err) {
-            console.error('Erro ao buscar produtos com quantidade disponível:', err);
+            console.error('Erro ao buscar produtos:', err);
             return res.status(500).json({ error: "Erro ao buscar produtos." });
         }
+        console.log('Produtos retornados:', results); // Log para verificar os dados retornados
         res.json(results);
     });
 });
@@ -201,24 +200,47 @@ app.post('/confirmar-pedido', (req, res) => {
 
     const updatePromises = carrinho.map(item => {
         return new Promise((resolve, reject) => {
-            const sql = "UPDATE produtos SET quantidade = quantidade - ? WHERE id = ?";
-            db.query(sql, [item.quantidade, item.produto_id], (err) => {
-                if (err) reject(err);
-                else resolve();
+            // Verifica a quantidade disponível no banco de dados
+            const checkSql = "SELECT quantidade FROM produtos WHERE id = ?";
+            db.query(checkSql, [item.produto_id], (err, results) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                const quantidadeDisponivel = results[0]?.quantidade || 0;
+
+                if (quantidadeDisponivel < item.quantidade) {
+                    reject(new Error(`Quantidade insuficiente para o produto ${item.produto_id}.`));
+                    return;
+                }
+
+                // Atualiza a quantidade no banco de dados
+                const novaQuantidade = quantidadeDisponivel - item.quantidade;
+                const updateSql = "UPDATE produtos SET quantidade = ? WHERE id = ?";
+                db.query(updateSql, [novaQuantidade, item.produto_id], (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        console.log(`Produto ${item.produto_id} atualizado: nova quantidade = ${novaQuantidade}`);
+                        resolve();
+                    }
+                });
             });
         });
     });
 
     Promise.all(updatePromises)
         .then(() => {
-            // Aqui, você remove todos os itens do carrinho do usuário APÓS atualizar o estoque
+            // Remove apenas os itens do carrinho do usuário que foram processados
             db.query("DELETE FROM carrinho WHERE id_usuario = ?", [id_usuario], (err) => {
                 if (err) return res.status(500).json({ error: "Erro ao limpar o carrinho." });
                 res.json({ message: "Pedido confirmado e estoque atualizado com sucesso!" });
             });
         })
         .catch(err => {
-            res.status(500).json({ error: "Erro ao confirmar o pedido." });
+            console.error("Erro ao confirmar pedido:", err.message);
+            res.status(400).json({ error: err.message });
         });
 });
 
