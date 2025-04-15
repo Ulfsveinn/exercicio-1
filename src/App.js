@@ -12,6 +12,7 @@ import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Sementes from "./Components/Sementes";
 import Carrinho from "./Components/Carrinho";
+import RedefinirSenha from "./Components/RedefinirSenha"; // Import the component
 
 import "./App.css";
 import "./Components/Carrinho.css";
@@ -164,6 +165,7 @@ function App() {
               />
             }
           />
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} /> {/* Added route */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>

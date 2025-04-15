@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
 
 function Login({ onLogin }) {
@@ -92,7 +92,7 @@ function Login({ onLogin }) {
       <input type="submit" value="Entrar" />
       {errorMessage && <p className="error">{errorMessage}</p>}
       <div className="email">
-        <a href="#">Esqueceu a senha?</a>
+        <Link to="/redefinir-senha">Esqueceu a senha?</Link>
       </div>
       <figure aria-hidden="true">
         <div className="person-body"></div>

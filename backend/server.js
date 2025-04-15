@@ -91,6 +91,32 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Redefinir senha
+app.post('/redefinirsenha', async (req, res) => {
+    const { email, senha } = req.body;
+
+    if (!email || !senha) {
+        return res.status(400).json({ error: "Email e nova senha são obrigatórios." });
+    }
+
+    try {
+        const [results] = await db.promise().query("SELECT * FROM usuarios WHERE email = ?", [email]);
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "Email não encontrado." });
+        }
+
+        const hashedPassword = await bcrypt.hash(senha, 10);
+
+        await db.promise().query("UPDATE usuarios SET password = ? WHERE email = ?", [hashedPassword, email]);
+
+        res.json({ message: "Senha redefinida com sucesso!" });
+    } catch (err) {
+        console.error('Erro ao redefinir senha:', err);
+        res.status(500).json({ error: "Erro interno no servidor." });
+    }
+});
+
 // Listar produtos
 app.get('/produtos', (req, res) => {
     const sql = `
